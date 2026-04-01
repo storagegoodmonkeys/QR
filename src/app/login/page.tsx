@@ -37,10 +37,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-5xl mb-3">🔥</div>
-          <h1 className="text-3xl font-extrabold bg-gradient-to-r from-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
-            Flick!
-          </h1>
+          <img src="/flick-logo.png" alt="Flick!" className="h-16 mx-auto mb-3" />
           <p className="text-[#666] text-sm mt-2">QR Code Generator</p>
         </div>
 

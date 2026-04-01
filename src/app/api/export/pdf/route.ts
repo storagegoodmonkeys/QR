@@ -73,10 +73,10 @@ export async function GET(req: NextRequest) {
     const qrX = x + (STICKER_W - QR_SIZE) / 2;
     doc.addImage(qrDataUrl, "PNG", qrX, y, QR_SIZE, QR_SIZE);
 
-    // Serial text below QR
-    doc.setFontSize(5);
-    doc.setFont("helvetica", "normal");
-    doc.text(data[i].serial_code, x + STICKER_W / 2, y + TEXT_OFFSET_Y, {
+    // Short code text below QR
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "bold");
+    doc.text(data[i].short_code, x + STICKER_W / 2, y + TEXT_OFFSET_Y, {
       align: "center",
     });
   }

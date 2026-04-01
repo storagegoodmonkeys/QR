@@ -10,6 +10,7 @@ export default function GeneratePage() {
   const [quantity, setQuantity] = useState<number>(100);
   const [customQty, setCustomQty] = useState("");
   const [useCustom, setUseCustom] = useState(false);
+  const [startNumber, setStartNumber] = useState("");
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
@@ -32,7 +33,7 @@ export default function GeneratePage() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prefix, quantity: activeQty }),
+        body: JSON.stringify({ prefix, quantity: activeQty, startNumber: startNumber ? parseInt(startNumber) : undefined }),
       });
 
       if (res.status === 401) {
@@ -121,6 +122,7 @@ export default function GeneratePage() {
                 setResult(null);
                 setProgress(0);
                 setPrefix("");
+                setStartNumber("");
               }}
               className="px-6 py-3 bg-[#222] text-white font-bold rounded-xl hover:bg-[#333] transition-colors"
             >
@@ -147,6 +149,25 @@ export default function GeneratePage() {
             />
             <p className="text-[#555] text-xs mt-2">
               Alphanumeric + hyphens. Codes will be: {prefix || "PREFIX"}-00001, {prefix || "PREFIX"}-00002, ...
+            </p>
+          </div>
+
+          {/* Starting Number */}
+          <div>
+            <label className="block text-sm font-semibold text-[#999] mb-2">
+              Starting Number <span className="text-[#555] font-normal">(optional)</span>
+            </label>
+            <input
+              type="number"
+              value={startNumber}
+              onChange={(e) => setStartNumber(e.target.value)}
+              placeholder="Auto-detect from DB"
+              min={1}
+              className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#333] rounded-xl text-white font-mono text-lg placeholder-[#444] focus:outline-none focus:border-[#FDD835] transition-colors"
+              disabled={generating}
+            />
+            <p className="text-[#555] text-xs mt-2">
+              Leave empty to auto-continue from last code. Set manually to extend an existing series (e.g. 10001).
             </p>
           </div>
 
@@ -209,7 +230,7 @@ export default function GeneratePage() {
             <div className="bg-[#111] rounded-xl p-4 border border-[#222]">
               <p className="text-[#666] text-sm mb-2">Preview</p>
               <p className="text-white font-mono text-sm">
-                {prefix.toUpperCase()}-00001 &rarr; {prefix.toUpperCase()}-{String(activeQty).padStart(5, "0")}
+                {prefix.toUpperCase()}-{String(startNumber ? parseInt(startNumber) : 1).padStart(5, "0")} &rarr; {prefix.toUpperCase()}-{String((startNumber ? parseInt(startNumber) - 1 : 0) + activeQty).padStart(5, "0")}
               </p>
               <p className="text-[#555] text-xs mt-1">
                 {activeQty.toLocaleString()} codes | {isLargeBatch ? "Streaming mode" : "Standard mode"} |{" "}

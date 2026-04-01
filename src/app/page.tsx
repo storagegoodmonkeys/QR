@@ -60,12 +60,23 @@ export default function DashboardPage() {
           </h1>
           <p className="text-[#666] text-sm mt-1">Manage QR code batches for lighters</p>
         </div>
-        <button
-          onClick={() => router.push("/generate")}
-          className="px-6 py-3 bg-gradient-to-r from-[#FFD700] to-[#FFA000] text-[#0A0A0A] font-bold rounded-xl hover:opacity-90 transition-opacity"
-        >
-          + Generate New Batch
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.push("/generate")}
+            className="px-6 py-3 bg-gradient-to-r from-[#FFD700] to-[#FFA000] text-[#0A0A0A] font-bold rounded-xl hover:opacity-90 transition-opacity"
+          >
+            + Generate New Batch
+          </button>
+          <button
+            onClick={async () => {
+              await fetch("/api/logout", { method: "POST" });
+              router.push("/login");
+            }}
+            className="px-4 py-3 bg-[#1A1A1A] border border-[#333] text-[#999] font-semibold rounded-xl hover:border-[#555] hover:text-white transition-colors"
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
 
       {/* Stats */}

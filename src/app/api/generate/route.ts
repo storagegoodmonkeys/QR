@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { prefix, quantity } = await req.json();
+  const { prefix, quantity, startNumber } = await req.json();
 
   if (!prefix || typeof prefix !== "string" || prefix.length < 2 || prefix.length > 20) {
     return NextResponse.json({ error: "Prefix must be 2-20 characters" }, { status: 400 });
@@ -25,16 +25,20 @@ export async function POST(req: NextRequest) {
 
   const batchId = crypto.randomUUID();
 
-  // Auto-detect start sequence from existing codes with same prefix
-  const { data: maxSeqRow } = await supabase
-    .from("lighter_codes")
-    .select("sequence_number")
-    .eq("prefix", cleanPrefix)
-    .order("sequence_number", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  const startIndex = (maxSeqRow?.sequence_number ?? 0) + 1;
+  // Use manual startNumber if provided, otherwise auto-detect from DB
+  let startIndex: number;
+  if (startNumber && Number.isInteger(startNumber) && startNumber >= 1) {
+    startIndex = startNumber;
+  } else {
+    const { data: maxSeqRow } = await supabase
+      .from("lighter_codes")
+      .select("sequence_number")
+      .eq("prefix", cleanPrefix)
+      .order("sequence_number", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    startIndex = (maxSeqRow?.sequence_number ?? 0) + 1;
+  }
 
   // For large batches (10k+), use streaming response
   if (quantity >= 10000) {

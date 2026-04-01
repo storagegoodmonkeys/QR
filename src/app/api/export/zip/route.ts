@@ -48,9 +48,7 @@ export async function GET(req: NextRequest) {
       color: { dark: "#000000", light: "#FFFFFF" },
     });
 
-    // Create a canvas-like image with serial text below
-    // For simplicity, we'll use the raw QR PNG (serial in filename)
-    archive.append(qrBuffer, { name: `${code.serial_code}.png` });
+    archive.append(qrBuffer, { name: `${code.short_code}.png` });
   }
 
   await archive.finalize();
