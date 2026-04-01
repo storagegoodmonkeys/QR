@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
+const LOGO_SRC = "/flick-logo.png";
 
 export default function LoginPage() {
   const [password, setPassword] = useState("");
@@ -34,37 +37,67 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <img src="/flick-logo.png" alt="Flick!" className="h-16 mx-auto mb-3" />
-          <p className="text-[#666] text-sm mt-2">QR Code Generator</p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#FDD835]/5 rounded-full blur-[120px]" />
+      </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Admin password"
-              className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#333] rounded-xl text-white placeholder-[#555] focus:outline-none focus:border-[#FDD835] transition-colors"
-              autoFocus
+      <div className="w-full max-w-sm relative z-10">
+        {/* Logo + branding */}
+        <div className="text-center mb-10">
+          <div className="mb-6">
+            <Image
+              src={LOGO_SRC}
+              alt="Flick!"
+              width={200}
+              height={80}
+              className="mx-auto"
+              priority
             />
           </div>
+          <div className="inline-block px-4 py-1.5 rounded-full bg-[#FDD835]/10 border border-[#FDD835]/20">
+            <p className="text-[#FDD835] text-sm font-semibold tracking-wide">QR Code Generator</p>
+          </div>
+        </div>
 
-          {error && (
-            <p className="text-[#FB2C36] text-sm text-center">{error}</p>
-          )}
+        {/* Login card */}
+        <div className="bg-[#1A1A1A]/80 backdrop-blur-sm rounded-2xl p-8 border border-[#333]/50 shadow-2xl shadow-black/30">
+          <h2 className="text-white text-lg font-bold mb-1 text-center">Admin Access</h2>
+          <p className="text-[#666] text-sm mb-6 text-center">Enter your password to continue</p>
 
-          <button
-            type="submit"
-            disabled={loading || !password}
-            className="w-full py-3 bg-gradient-to-r from-[#FFD700] to-[#FFA000] text-[#0A0A0A] font-bold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
-          >
-            {loading ? "Signing in..." : "Sign In"}
-          </button>
-        </form>
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="w-full px-4 py-3.5 bg-[#0A0A0A] border border-[#333] rounded-xl text-white placeholder-[#555] focus:outline-none focus:border-[#FDD835] focus:ring-1 focus:ring-[#FDD835]/30 transition-all text-center text-lg tracking-widest"
+                autoFocus
+              />
+            </div>
+
+            {error && (
+              <p className="text-[#FB2C36] text-sm text-center bg-[#FB2C36]/10 py-2 rounded-lg">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading || !password}
+              className="w-full py-3.5 bg-gradient-to-r from-[#FFD700] to-[#FFA000] text-[#0A0A0A] font-bold text-lg rounded-xl hover:opacity-90 transition-all disabled:opacity-40 shadow-lg shadow-[#FDD835]/10"
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
+          </form>
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-[#444] text-xs mt-8">
+          Flick! by Good Monkeys
+        </p>
       </div>
     </div>
   );
