@@ -52,12 +52,11 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-extrabold">
-            <span className="bg-gradient-to-r from-[#FFD700] to-[#FF6B35] bg-clip-text text-transparent">
-              Flick!
-            </span>{" "}
-            QR Generator
-          </h1>
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/flick-logo.png" alt="Flick!" className="h-10 w-auto" />
+            <h1 className="text-2xl font-extrabold text-white">QR Generator</h1>
+          </div>
           <p className="text-[#666] text-sm mt-1">Manage QR code batches for lighters</p>
         </div>
         <div className="flex items-center gap-3">
