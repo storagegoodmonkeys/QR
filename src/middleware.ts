@@ -39,7 +39,7 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Protect everything except static files and login
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    // Protect everything except static files, public assets, and login
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.ico$).*)",
   ],
 };
