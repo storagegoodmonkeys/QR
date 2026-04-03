@@ -15,6 +15,7 @@ export default function BatchDetailPage() {
   const [codes, setCodes] = useState<CodeRow[]>([]);
   const [filtered, setFiltered] = useState<CodeRow[]>([]);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "available" | "registered">("all");
   const [loading, setLoading] = useState(true);
   const [prefix, setPrefix] = useState("");
   const [exporting, setExporting] = useState<string | null>(null);
@@ -54,20 +55,23 @@ export default function BatchDetailPage() {
   }, [batchId, router]);
 
   useEffect(() => {
-    if (!search.trim()) {
-      setFiltered(codes);
-    } else {
-      const q = search.toUpperCase();
-      setFiltered(
-        codes.filter(
-          (c) =>
-            c.serial_code.toUpperCase().includes(q) ||
-            c.short_code.toUpperCase().includes(q)
-        )
+    let result = codes;
+    if (statusFilter !== "all") {
+      result = result.filter((c) =>
+        statusFilter === "registered" ? c.status === "registered" : c.status !== "registered"
       );
     }
+    if (search.trim()) {
+      const q = search.toUpperCase();
+      result = result.filter(
+        (c) =>
+          c.serial_code.toUpperCase().includes(q) ||
+          c.short_code.toUpperCase().includes(q)
+      );
+    }
+    setFiltered(result);
     setPage(1);
-  }, [search, codes]);
+  }, [search, codes, statusFilter]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const pageData = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -171,15 +175,34 @@ export default function BatchDetailPage() {
         </button>
       </div>
 
-      {/* Search */}
-      <div className="mb-4">
+      {/* Search + Filter */}
+      <div className="flex gap-3 mb-4">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by serial or short code..."
-          className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#333] rounded-xl text-white placeholder-[#444] focus:outline-none focus:border-[#FDD835]"
+          className="flex-1 px-4 py-3 bg-[#1A1A1A] border border-[#333] rounded-xl text-white placeholder-[#444] focus:outline-none focus:border-[#FDD835]"
         />
+        <div className="flex bg-[#1A1A1A] border border-[#333] rounded-xl overflow-hidden">
+          {(["all", "available", "registered"] as const).map((val) => (
+            <button
+              key={val}
+              onClick={() => setStatusFilter(val)}
+              className={`px-4 py-3 text-sm font-semibold capitalize transition-colors ${
+                statusFilter === val
+                  ? val === "available"
+                    ? "bg-[#00D9FF]/15 text-[#00D9FF]"
+                    : val === "registered"
+                    ? "bg-[#00C950]/15 text-[#00C950]"
+                    : "bg-[#FDD835]/15 text-[#FDD835]"
+                  : "text-[#666] hover:text-white"
+              }`}
+            >
+              {val}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Table */}
